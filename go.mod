@@ -7,7 +7,9 @@ require (
 	github.com/cloudwego/netpoll v0.0.3
 	github.com/lesismal/arpc v1.1.9
 	github.com/lesismal/nbio v1.1.23-0.20210815145206-b106d99bce56
+	github.com/mosn/easygo v0.0.0-20201210062404-62796fdb3827
 	github.com/panjf2000/gnet v1.5.3
+	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e
 )
 
 require (
@@ -17,6 +19,5 @@ require (
 	go.uber.org/atomic v1.8.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.18.1 // indirect
-	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 )
