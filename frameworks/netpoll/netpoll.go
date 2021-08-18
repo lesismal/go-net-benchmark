@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"time"
 
@@ -12,8 +13,8 @@ import (
 	alog "github.com/lesismal/arpc/log"
 )
 
-var port = ":8004"
-var rpcPort = ":9004"
+var port = flag.Int("p", 8000, "server addr")
+var rpcPort = flag.Int("r", 9000, "rpc server addr")
 
 func main() {
 	flag.Parse()
@@ -21,7 +22,7 @@ func main() {
 	alog.SetLevel(alog.LevelNone)
 
 	// 创建 listener
-	listener, err := netpoll.CreateListener("tcp", port)
+	listener, err := netpoll.CreateListener("tcp", fmt.Sprintf(":%v", *port))
 	if err != nil {
 		panic("create netpoll listener fail")
 	}
@@ -67,7 +68,7 @@ func main() {
 	})
 	defer svr.Stop()
 
-	log.Fatal(svr.Run(rpcPort))
+	log.Fatal(svr.Run(fmt.Sprintf(":%v", *rpcPort)))
 }
 
 // 读事件处理

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"runtime"
 	"runtime/debug"
@@ -14,8 +16,8 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-var port = 8005
-var rpcPort = ":9005"
+var port = flag.Int("p", 8000, "server addr")
+var rpcPort = flag.Int("r", 9000, "rpc server addr")
 
 var _EPOLLCLOSED netpoll.EpollEvent = 0x20
 var pool = NewWorkerPool(runtime.NumCPU() * 4)
@@ -33,7 +35,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	ln, err := listen(port)
+	ln, err := listen(*port)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,7 +89,7 @@ func main() {
 	})
 	defer svr.Stop()
 
-	log.Fatal(svr.Run(rpcPort))
+	log.Fatal(svr.Run(fmt.Sprintf(":%v", *rpcPort)))
 }
 
 func epollConfig() *netpoll.EpollConfig {

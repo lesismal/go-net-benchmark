@@ -17,8 +17,8 @@ import (
 )
 
 var (
-	addr          = flag.String("addr", "localhost:8001", "server addr")
-	rpcAddr       = flag.String("r", "localhost:9001", "rpc server addr")
+	port          = flag.Int("p", 8000, "server addr")
+	rpcPort       = flag.Int("r", 9000, "rpc server addr")
 	framework     = flag.String("f", "none", "framework name")
 	connectionNum = flag.Int("c", 100, "connection num")
 	total         = flag.Int64("n", 10000000, "total test time")
@@ -31,7 +31,7 @@ func main() {
 	alog.SetLevel(alog.LevelNone)
 
 	client, err := arpc.NewClient(func() (net.Conn, error) {
-		return net.DialTimeout("tcp", *rpcAddr, time.Second*3)
+		return net.DialTimeout("tcp", fmt.Sprintf("127.0.0.1:%v", *rpcPort), time.Second*3)
 	})
 	if err != nil {
 		log.Fatalf("NewClient failed: %v", err)
@@ -42,7 +42,7 @@ func main() {
 
 	conns := make([]net.Conn, *connectionNum)
 	for i := 0; i < *connectionNum; i++ {
-		c, err := net.DialTimeout("tcp", *addr, time.Second*3)
+		c, err := net.DialTimeout("tcp", fmt.Sprintf("127.0.0.1:%v", *port), time.Second*3)
 		if err != nil {
 			log.Fatalf("dial failed: %v", err)
 		}

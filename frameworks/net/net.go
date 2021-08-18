@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"net"
 
@@ -9,8 +11,8 @@ import (
 	alog "github.com/lesismal/arpc/log"
 )
 
-var port = ":8001"
-var rpcPort = ":9001"
+var port = flag.Int("p", 8000, "server addr")
+var rpcPort = flag.Int("r", 9000, "rpc server addr")
 
 func handle(conn net.Conn) {
 	buf := make([]byte, 1024*32)
@@ -32,7 +34,7 @@ func main() {
 	alog.SetLevel(alog.LevelNone)
 
 	go func() {
-		listener, err := net.Listen("tcp", port)
+		listener, err := net.Listen("tcp", fmt.Sprintf(":%v", *port))
 		if err != nil {
 			log.Fatalf("listen failed: %v", err)
 		}
@@ -64,5 +66,5 @@ func main() {
 	})
 	defer svr.Stop()
 
-	log.Fatal(svr.Run(rpcPort))
+	log.Fatal(svr.Run(fmt.Sprintf(":%v", *rpcPort)))
 }

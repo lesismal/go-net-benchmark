@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 
@@ -10,8 +11,8 @@ import (
 	"github.com/panjf2000/gnet"
 )
 
-var port = 8003
-var rpcPort = ":9003"
+var port = flag.Int("p", 8000, "server addr")
+var rpcPort = flag.Int("r", 9000, "rpc server addr")
 
 type echoServer struct {
 	*gnet.EventServer
@@ -28,7 +29,7 @@ func main() {
 	echo := new(echoServer)
 
 	go func() {
-		log.Fatal(gnet.Serve(echo, fmt.Sprintf("tcp://:%d", port), gnet.WithMulticore(true), gnet.WithReusePort(false)))
+		log.Fatal(gnet.Serve(echo, fmt.Sprintf("tcp://:%d", *port), gnet.WithMulticore(true), gnet.WithReusePort(false)))
 	}()
 
 	recorder := perf.NewRecorder("server@gnet")
@@ -48,5 +49,5 @@ func main() {
 	})
 	defer svr.Stop()
 
-	log.Fatal(svr.Run(rpcPort))
+	log.Fatal(svr.Run(fmt.Sprintf(":%v", *rpcPort)))
 }

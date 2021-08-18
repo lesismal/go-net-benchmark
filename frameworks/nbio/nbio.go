@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 
 	"github.com/cloudwego/kitex-benchmark/perf"
@@ -10,8 +12,8 @@ import (
 	nlog "github.com/lesismal/nbio/logging"
 )
 
-var port = ":8002"
-var rpcPort = ":9002"
+var port = flag.Int("p", 8000, "server addr")
+var rpcPort = flag.Int("r", 9000, "rpc server addr")
 
 func main() {
 	alog.SetLevel(alog.LevelNone)
@@ -19,7 +21,7 @@ func main() {
 
 	g := nbio.NewGopher(nbio.Config{
 		Network: "tcp",
-		Addrs:   []string{port},
+		Addrs:   []string{fmt.Sprintf(":%v", *port)},
 	})
 
 	g.OnData(func(c *nbio.Conn, data []byte) {
@@ -49,5 +51,5 @@ func main() {
 	})
 	defer svr.Stop()
 
-	log.Fatal(svr.Run(rpcPort))
+	log.Fatal(svr.Run(fmt.Sprintf(":%v", *rpcPort)))
 }
