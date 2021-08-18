@@ -37,7 +37,6 @@ func main() {
 			log.Fatalf("listen failed: %v", err)
 		}
 		defer listener.Close()
-		log.Println("Running on:", port)
 		for {
 			conn, err := listener.Accept()
 			if err != nil {
