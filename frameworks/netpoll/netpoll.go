@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"log"
-	"net"
 	"time"
 
 	"github.com/cloudwego/kitex-benchmark/perf"
@@ -54,7 +53,7 @@ func main() {
 	recorder := perf.NewRecorder("server@net")
 
 	svr := arpc.NewServer()
-	svr.Handler.Handle("Hello", func(ctx *arpc.Context) {
+	svr.Handler.Handle("action", func(ctx *arpc.Context) {
 		cmd := ""
 		ctx.Bind(&cmd)
 		switch cmd {
@@ -66,12 +65,9 @@ func main() {
 			ctx.Write(recorder.ReportString())
 		}
 	})
+	defer svr.Stop()
 
-	ln, err := net.Listen("tcp", rpcPort)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	svr.Serve(ln)
+	log.Fatal(svr.Run(rpcPort))
 }
 
 // 读事件处理
@@ -83,7 +79,7 @@ func handler(ctx context.Context, connection netpoll.Connection) error {
 		return err
 	}
 
-	_, err = connection.Write(append([]byte{}, buf...))
+	_, err = connection.Write(buf)
 
 	return err
 }

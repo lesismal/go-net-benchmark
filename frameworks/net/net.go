@@ -19,7 +19,7 @@ func handle(conn net.Conn) {
 		if err != nil {
 			return
 		}
-		nwrite, err := conn.Write(append([]byte{}, buf[:nread]...))
+		nwrite, err := conn.Write(buf[:nread])
 		if err != nil {
 			return
 		}
@@ -50,7 +50,7 @@ func main() {
 	recorder := perf.NewRecorder("server@net")
 
 	svr := arpc.NewServer()
-	svr.Handler.Handle("Hello", func(ctx *arpc.Context) {
+	svr.Handler.Handle("action", func(ctx *arpc.Context) {
 		cmd := ""
 		ctx.Bind(&cmd)
 		switch cmd {
@@ -62,10 +62,7 @@ func main() {
 			ctx.Write(recorder.ReportString())
 		}
 	})
+	defer svr.Stop()
 
-	ln, err := net.Listen("tcp", rpcPort)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	svr.Serve(ln)
+	log.Fatal(svr.Run(rpcPort))
 }

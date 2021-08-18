@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"net"
 
 	"github.com/cloudwego/kitex-benchmark/perf"
 	"github.com/lesismal/arpc"
@@ -19,7 +18,7 @@ type echoServer struct {
 }
 
 func (es *echoServer) React(frame []byte, c gnet.Conn) (out []byte, action gnet.Action) {
-	out = append([]byte{}, frame...)
+	out = frame
 	return
 }
 
@@ -35,7 +34,7 @@ func main() {
 	recorder := perf.NewRecorder("server@gnet")
 
 	svr := arpc.NewServer()
-	svr.Handler.Handle("Hello", func(ctx *arpc.Context) {
+	svr.Handler.Handle("action", func(ctx *arpc.Context) {
 		cmd := ""
 		ctx.Bind(&cmd)
 		switch cmd {
@@ -47,10 +46,7 @@ func main() {
 			ctx.Write(recorder.ReportString())
 		}
 	})
+	defer svr.Stop()
 
-	ln, err := net.Listen("tcp", rpcPort)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	svr.Serve(ln)
+	log.Fatal(svr.Run(rpcPort))
 }

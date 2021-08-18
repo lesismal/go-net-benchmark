@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net"
 
 	"github.com/cloudwego/kitex-benchmark/perf"
 	"github.com/lesismal/arpc"
@@ -24,7 +23,7 @@ func main() {
 	})
 
 	g.OnData(func(c *nbio.Conn, data []byte) {
-		c.Write(append([]byte{}, data...))
+		c.Write(data)
 	})
 
 	err := g.Start()
@@ -36,7 +35,7 @@ func main() {
 	recorder := perf.NewRecorder("server@nbio")
 
 	svr := arpc.NewServer()
-	svr.Handler.Handle("Hello", func(ctx *arpc.Context) {
+	svr.Handler.Handle("action", func(ctx *arpc.Context) {
 		cmd := ""
 		ctx.Bind(&cmd)
 		switch cmd {
@@ -50,9 +49,5 @@ func main() {
 	})
 	defer svr.Stop()
 
-	ln, err := net.Listen("tcp", rpcPort)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	svr.Serve(ln)
+	log.Fatal(svr.Run(rpcPort))
 }

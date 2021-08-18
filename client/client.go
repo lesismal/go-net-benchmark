@@ -81,7 +81,7 @@ func main() {
 
 	r.Warmup(handler, *connectionNum, 100*1000)
 
-	err = client.Call("Hello", "begin", nil, time.Second)
+	err = client.Call("action", "begin", nil, time.Second)
 	if err != nil {
 		log.Fatalf("call begain failed: %v", err)
 	}
@@ -94,7 +94,7 @@ func main() {
 	recorder.End()
 
 	serverReport := ""
-	err = client.Call("Hello", "end", &serverReport, time.Second)
+	err = client.Call("action", "end", &serverReport, time.Second)
 	if err != nil {
 		log.Fatalf("call begain failed: %v", err)
 	}
