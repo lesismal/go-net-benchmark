@@ -2,9 +2,9 @@
 
 . ./scripts/env.sh
 
-repo=("net" "nbio" "gnet" "netpoll")
-ports=(8001 8002 8003 8004)
-rpcports=(9001 9002 9003 9004)
+repo=("net" "nbio" "gnet" "netpoll" "easygo")
+ports=(8001 8002 8003 8004 8005)
+rpcports=(9001 9002 9003 9004 9005)
 
 . ./scripts/build.sh
 
