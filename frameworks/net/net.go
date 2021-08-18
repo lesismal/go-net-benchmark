@@ -31,6 +31,8 @@ func handle(conn net.Conn) {
 	}
 }
 func main() {
+	flag.Parse()
+
 	alog.SetLevel(alog.LevelNone)
 
 	go func() {

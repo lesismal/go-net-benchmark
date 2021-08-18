@@ -23,6 +23,8 @@ var _EPOLLCLOSED netpoll.EpollEvent = 0x20
 var pool = NewWorkerPool(runtime.NumCPU() * 4)
 
 func main() {
+	flag.Parse()
+
 	alog.SetLevel(alog.LevelNone)
 
 	ep, err := netpoll.EpollCreate(epollConfig())

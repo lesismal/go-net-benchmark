@@ -16,6 +16,8 @@ var port = flag.Int("p", 8000, "server addr")
 var rpcPort = flag.Int("r", 9000, "rpc server addr")
 
 func main() {
+	flag.Parse()
+
 	alog.SetLevel(alog.LevelNone)
 	nlog.SetLevel(nlog.LevelNone)
 

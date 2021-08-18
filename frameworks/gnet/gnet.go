@@ -24,6 +24,8 @@ func (es *echoServer) React(frame []byte, c gnet.Conn) (out []byte, action gnet.
 }
 
 func main() {
+	flag.Parse()
+
 	alog.SetLevel(alog.LevelNone)
 
 	echo := new(echoServer)
