@@ -51,7 +51,7 @@ func main() {
 		}
 	}()
 
-	recorder := perf.NewRecorder("server@net")
+	recorder := perf.NewRecorder("server@netpoll")
 
 	svr := arpc.NewServer()
 	svr.Handler.Handle("action", func(ctx *arpc.Context) {

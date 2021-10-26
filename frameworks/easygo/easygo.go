@@ -74,7 +74,7 @@ func main() {
 		})
 	})
 
-	recorder := perf.NewRecorder("server@net")
+	recorder := perf.NewRecorder("server@easygo")
 
 	svr := arpc.NewServer()
 	svr.Handler.Handle("action", func(ctx *arpc.Context) {
