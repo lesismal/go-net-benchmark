@@ -45,7 +45,7 @@ func main() {
 		log.Fatal(gnet.Run(echo, echo.addr, gnet.WithMulticore(multicore)))
 	}()
 
-	recorder := perf.NewRecorder("server@gnet")
+	recorder := perf.NewRecorder("server@gnetv2")
 
 	svr := arpc.NewServer()
 	svr.Handler.Handle("action", func(ctx *arpc.Context) {
