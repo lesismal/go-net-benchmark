@@ -15,12 +15,23 @@ var port = flag.Int("p", 8000, "server addr")
 var rpcPort = flag.Int("r", 9000, "rpc server addr")
 
 type echoServer struct {
-	*gnet.EventServer
+	gnet.BuiltinEventEngine
+
+	eng       gnet.Engine
+	addr      string
+	multicore bool
 }
 
-func (es *echoServer) React(frame []byte, c gnet.Conn) (out []byte, action gnet.Action) {
-	out = frame
-	return
+func (es *echoServer) OnBoot(eng gnet.Engine) gnet.Action {
+	es.eng = eng
+	log.Printf("echo server with multi-core=%t is listening on %s\n", es.multicore, es.addr)
+	return gnet.None
+}
+
+func (es *echoServer) OnTraffic(c gnet.Conn) gnet.Action {
+	buf, _ := c.Next(-1)
+	c.Write(buf)
+	return gnet.None
 }
 
 func main() {
@@ -28,10 +39,10 @@ func main() {
 
 	alog.SetLevel(alog.LevelNone)
 
-	echo := new(echoServer)
-
 	go func() {
-		log.Fatal(gnet.Serve(echo, fmt.Sprintf("tcp://:%d", *port), gnet.WithMulticore(true), gnet.WithReusePort(false)))
+		multicore := true
+		echo := &echoServer{addr: fmt.Sprintf("tcp://:%d", *port), multicore: multicore}
+		log.Fatal(gnet.Run(echo, echo.addr, gnet.WithMulticore(multicore)))
 	}()
 
 	recorder := perf.NewRecorder("server@gnet")
