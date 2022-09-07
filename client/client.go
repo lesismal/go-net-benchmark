@@ -30,8 +30,14 @@ func main() {
 
 	alog.SetLevel(alog.LevelNone)
 
-	client, err := arpc.NewClient(func() (net.Conn, error) {
-		return net.DialTimeout("tcp", fmt.Sprintf("127.0.0.1:%v", *rpcPort), time.Second*3)
+	client, err := arpc.NewClient(func() (c net.Conn, err error) {
+		for i := 0; i < 5; i++ {
+			c, err = net.DialTimeout("tcp", fmt.Sprintf("127.0.0.1:%v", *rpcPort), time.Second*3)
+			if err == nil {
+				return c, err
+			}
+		}
+		return c, err
 	})
 	if err != nil {
 		log.Fatalf("NewClient failed: %v", err)
